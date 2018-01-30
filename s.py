@@ -1,10 +1,9 @@
 import matplotlib as mpl
 import matplotlib.colors as col
 import matplotlib.pyplot as plt
-import itertools
+from matplotlib import animation
 import numpy as np
-import pandas as pd
-import copy
+
 
 mpl.rcParams.update(mpl.rcParamsDefault)
 e = ['#ffffff',
@@ -20,6 +19,7 @@ e = ['#ffffff',
      '#EBA289']
 
 cmap = col.LinearSegmentedColormap.from_list('', [col.hex2color(color) for color in e], N=len(e))
+
 
 class Schelling:
     def __init__(self, N, empty_ratio, similarity_threshold, races=2):
@@ -43,7 +43,7 @@ class Schelling:
 
         else:
             same = len(np.where(np.isin(self.map[x[0]-1:x[0]+2, x[1]-1:x[1]+2],
-                                [self.map[x[0],x[1]], 0]))[0])-1
+                                [self.map[x[0], x[1]], 0]))[0])-1
 
             if same >= 8*self.similarity_threshold:
                 satisfied = True
@@ -68,7 +68,7 @@ class Schelling:
         else:
             self.satisfied = np.array([self.is_satisfied(tuple(x)) for x in np.argwhere(self.map>-1)]).reshape(self.N+1, self.N+1)
 
-            unsatisfied = np.random.permutation(np.argwhere(self.satisfied==False))
+            unsatisfied = np.random.permutation(np.argwhere(self.satisfied == False))
 
             available = np.random.permutation(np.concatenate([self.empty_houses, unsatisfied]))
 
@@ -81,29 +81,28 @@ class Schelling:
             for k in now_empty:
                 self.map[k[0], k[1]] = 0
 
-            self.empty_houses = np.argwhere(self.map==0)
+            self.empty_houses = np.argwhere(self.map == 0)
 
-            self.houses_by_race = {i: np.argwhere(self.map==i) for i in np.arange(1, self.races+1)}
+            self.houses_by_race = {i: np.argwhere(self.map == i) for i in np.arange(1, self.races+1)}
 
-            self.households = {tuple(k) : self.map[k[0], k[1]] for k in np.argwhere(self.map>0)}
+            self.households = {tuple(k): self.map[k[0], k[1]] for k in np.argwhere(self.map>0)}
 
-            self.satisfied = np.array([self.is_satisfied(tuple(x)) for x in np.argwhere(self.map>-1)]).reshape(self.N+1, self.N+1)
+            self.satisfied = np.array([self.is_satisfied(tuple(x)) for x in np.argwhere(self.map > -1)]).reshape(self.N+1, self.N+1)
 
-            if len(np.argwhere(self.satisfied==False)) == 0:
+            if len(np.argwhere(self.satisfied == False)) == 0:
                 print("Simulation stable")
 
 
 
-from matplotlib import animation
 
 
 def animate_schelling(n):
     pass
 
 N = 100
-races = 2
+races = 3
 empty_ratio = .1
-similarity_threshold = .75
+similarity_threshold = .5
 
 
 schelling = Schelling(N, empty_ratio, similarity_threshold, races)
@@ -125,6 +124,6 @@ for i in range(200):
         schelling.update()
         animate.append([plt.imshow(schelling.map[1:schelling.N, 1:schelling.N], cmap=cmap)])
 
-anim = animation.ArtistAnimation(fig, animate, interval=250, repeat_delay=500,
+anim = animation.ArtistAnimation(fig, animate, interval=500, repeat_delay=500,
                                    blit=True)
 plt.show()
