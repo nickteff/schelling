@@ -50,7 +50,7 @@ class Schelling:
         ## assume the border is satisfied -
         ## this is just a simplification for the next part
         #####
-        elif x[0] in [0, self.N+1] or x[1] in [0, self.N+1]:
+        elif x[0] in [0, self.N] or x[1] in [0, self.N]:
             satisfied = True
 
         ######
@@ -97,10 +97,10 @@ class Schelling:
 
 
 if __name__ == "__main__":
-    N = 50
+    N = 66
     races = 2
     empty_ratio = .2
-    similarity_threshold = .667
+    similarity_threshold = 6/8
 
 
     schelling = Schelling(N, empty_ratio, similarity_threshold, races)
@@ -117,9 +117,9 @@ if __name__ == "__main__":
 
 
     for i in range(200):
-        if i % 5 == 4:
+        if i % 2 == 0:
             schelling.update()
-            animate.append([plt.imshow(schelling.map[1:schelling.N+1, 1:schelling.N+1], cmap=cmap)])
+            animate.append([plt.imshow(schelling.map[1:schelling.N, 1:schelling.N], cmap=cmap)])
 
     anim = animation.ArtistAnimation(fig, animate, interval=500, repeat_delay=500,
                                        blit=True)
