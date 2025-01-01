@@ -73,10 +73,11 @@ class Schelling:
     def update(self):
         unsatisfied = np.argwhere(self.satisfied==False)
 
-        available = np.random.permutation(np.concatenate([self.empty_houses, unsatisfied]))
+        available = np.random.permutation(unsatisfied)
 
         for k in range(len(unsatisfied)):
             avail = tuple(available[k])
+
             self.map[avail[0], avail[1]] = self.households[tuple(unsatisfied[k])]
 
         now_empty = np.delete(available, np.s_[:len(unsatisfied)], 0)
@@ -98,9 +99,9 @@ class Schelling:
 
 if __name__ == "__main__":
     N = 66
-    races = 2
+    races = 3
     empty_ratio = .2
-    similarity_threshold = 6/8
+    similarity_threshold = 4/8
 
 
     schelling = Schelling(N, empty_ratio, similarity_threshold, races)
